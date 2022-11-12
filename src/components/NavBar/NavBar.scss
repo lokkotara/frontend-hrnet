@@ -1,0 +1,17 @@
+@import "../../style/variables";
+
+.navBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 1rem;
+  background-color: $white-color;
+  box-shadow: 1px 1px 0.5rem 0.005rem rgba(0, 0, 0, 0.72);
+  .logo {
+    width: 15rem;
+  }
+
+  .logoApp {
+    width: 7rem;
+  }
+}

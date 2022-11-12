@@ -1,0 +1,70 @@
+@import "../../style/variables";
+
+.employees {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .arrayContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // justify-content: space-between;
+    min-height: 50vh;
+    flex: 0.6;
+    background-color: $white-color;
+    padding: 0 20px;
+    box-shadow: 1px 2px 0.5rem 0.005rem rgba(0, 0, 0, 0.72);
+    box-sizing: border-box;
+    .arrayContainerHeading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      .arrayContainerHeadingText {
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+      .arrayContainerHeadingButton {
+        display: flex;
+        align-items: center;
+        padding: 0.25rem 0.5rem;
+        border: 1px solid $dark-color;
+        border-radius: 3px;
+        outline: none;
+        cursor: pointer;
+        transition: all 0.1s ease-in-out;
+        background-color: $white-color;
+        color: $dark-color;
+        fill: $dark-color;
+        &:hover {
+          background-color: $dark-color;
+          color: $white-color;
+          border-color: transparent;
+          box-shadow: 4px 3px 5px 2px rgba(0, 0, 0, 0.42);
+          fill: $white-color;
+        }
+        svg {
+          width: 1.5rem;
+          margin-right: 0.25rem;
+        }
+      }
+    }
+    .arrayContainerBody {
+      flex: 1;
+    }
+  }
+}
+.ag-theme-alpine {
+  width: 60vw;
+  height: 60vh;
+  padding-bottom: 1rem;
+}
+.arrayContainerBodyHeading {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+  align-items: center;
+  #page-size {
+    margin: 0 0.25rem;
+  }
+}
