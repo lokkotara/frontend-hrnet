@@ -72,3 +72,27 @@
     width: 100%;
   }
 }
+.navigateButtons {
+  // background-color: lightgreen;
+    // width: 2rem;
+    // height: 2rem;
+    // border-radius: 50%;
+    font-size: 1.5rem;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.valid {
+  border: 1px solid green;
+  color: purple;
+}
+.invalid {
+  border: 1px solid red;
+  color: red;
+}
+.errorMessage {
+  color: red;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
