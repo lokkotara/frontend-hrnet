@@ -5,8 +5,7 @@ import DatePicker from "react-datepicker";
 import React from "react";
 import Select from "react-select";
 import range from "lodash/range";
-// import { Modal } from "@lokkotara/custom-modal";
-import  Modal  from "../../components/test/Modal";
+import { Modal } from "@lokkotara/custom-modal";
 import { getMonth, getYear } from "date-fns";
 import { states, departments } from "../../datas/datas";
 import { useNavigate } from "react-router-dom";
@@ -140,22 +139,18 @@ export default function Home() {
       ></i>
     </div>
   );
-  const message = (
-    <span>Employee successfully created</span>
-  );
 
   return (
     <main className="home">
       <Modal
         isOpen={isModal}
-        message={message}
+        message="Employee successfully created with component"
         icon="success"
         onClose={() => {
           setIsModal(false);
         }}
         modalStyle={style}
         messageStyle={bodyStyle}
-        // modalMode={false}
       />
       <div className="formContainer">
         <h1>Create an Employee</h1>
@@ -332,9 +327,6 @@ export default function Home() {
                   defaultValue={states[0]}
                   render={({ field }) => <Select {...field} options={states} />}
                 />
-                <p className="errorMessage">
-                  {errors.state && errors.state.message}
-                </p>
               </div>
               <div className="formRow">
                 <label htmlFor="zipCode">Zip code</label>
@@ -350,9 +342,9 @@ export default function Home() {
                   id="zipCode"
                   className="formInput"
                 />
-                <p className="errorMessage">
+                <span className="errorMessage">
                   {errors.zipCode && errors.zipCode.message}
-                </p>
+                </span>
               </div>
             </fieldset>
           </div>

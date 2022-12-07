@@ -14,15 +14,15 @@ export default function Employees() {
 
   // Each Column Definition results in one Column.
   const [columnDefs] = useState([
-    { field: "firstName", maxWidth: 130 },
-    { field: "lastName", maxWidth: 130 },
-    { field: "startDate", width: 100 },
-    { field: "department", maxWidth: 150 },
-    { field: "birthDate", width: 100 },
-    { field: "street", minWidth: 120, maxWidth: 180 },
-    { field: "city", width: 140 },
-    { field: "state", maxWidth: 100 },
-    { field: "zipCode", maxWidth: 120 },
+    { field: "firstName", maxWidth: 120 },
+    { field: "lastName",  maxWidth: 120 },
+    { field: "startDate", width: 120 },
+    { field: "department", maxWidth: 120 },
+    { field: "birthDate", width: 110 },
+    { field: "street", minWidth: 120, maxWidth: 170 },
+    { field: "city", width: 120 },
+    { field: "state", minWidth: 120, maxWidth: 150 },
+    { field: "zipCode", maxWidth: 100 },
   ]);
 
   // DefaultColDef sets props common to all Columns
