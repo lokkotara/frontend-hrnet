@@ -1,6 +1,5 @@
 import "./Home.scss";
 import "react-datepicker/dist/react-datepicker.css";
-import "react-day-picker/dist/style.css";
 import DatePicker from "react-datepicker";
 import React from "react";
 import Select from "react-select";
@@ -327,6 +326,9 @@ export default function Home() {
                   defaultValue={states[0]}
                   render={({ field }) => <Select {...field} options={states} />}
                 />
+                <p className="errorMessage">
+                  {errors.state && errors.state.message}
+                </p>
               </div>
               <div className="formRow">
                 <label htmlFor="zipCode">Zip code</label>
