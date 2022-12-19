@@ -1,20 +1,26 @@
-import { useNavigate } from "react-router-dom";
-import "react-day-picker/dist/style.css";
-import { useState } from "react";
 import "./Home.scss";
-import React from "react";
-import DatePicker from "react-datepicker";
-import { getMonth, getYear } from "date-fns";
-import range from "lodash/range";
 import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
+import React, { useState } from "react";
 import Select from "react-select";
-import {states, departments} from "../../datas/datas";
-import Modal from "../../components/Modal/Modal";
-
+import range from "lodash/range";
+import { Modal } from "@lokkotara/custom-modal";
+import { getMonth, getYear } from "date-fns";
+import { states, departments } from "../../datas/datas";
+import { useForm, Controller } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
-  const [birthDate, setBirthDate] = useState();
-  const [startDate, setStartDate] = useState();
+  const {
+    handleSubmit,
+    control,
+    register,
+    reset,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: "onTouched",
+  });
+
   const [isModal, setIsModal] = useState(false);
   const navigate = useNavigate();
   const years = range(1940, getYear(new Date()) + 1, 1);
@@ -32,176 +38,322 @@ export default function Home() {
     "November",
     "December",
   ];
-    const [department, setDepartment] = useState('Sales');
-    const [state, setState] = useState('Alabama');
 
-
-    const handleDepartment = (e) => {
-      setDepartment(e.value);
-    };
-    const handleState = (e) => {
-      setState(e.value);
-    };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formattedBirthDate = `${birthDate.getMonth()+1}/${birthDate.getDate()}/${birthDate.getFullYear().toString().slice(2,4)}`;
-    const formattedStartDate = `${startDate.getMonth()+1}/${startDate.getDate()}/${startDate.getFullYear().toString().slice(2,4)}`;
-    const obj = {
-      birthDate   : formattedBirthDate,
-      city        : e.target.city.value,
-      department  : department,
-      firstName   : e.target.firstName.value,
-      lastName    : e.target.lastName.value,
-      startDate   : formattedStartDate,
-      state       : state,
-      street      : e.target.street.value,
-      zipCode     : e.target.zipCode.value,
-    };
-    const employees = JSON.parse(localStorage.getItem("employeesList")) || [];
-    employees.push(obj);
-    localStorage.setItem("employeesList", JSON.stringify(employees));
-    setIsModal(true);
+  const formatDate = (date) => {
+    return `${date.getMonth() + 1}/${date.getDate()}/${date
+      .getFullYear()
+      .toString()
+      .slice(2, 4)}`;
   };
-  const customHeader= ({
-                  date,
-                  changeYear,
-                  changeMonth,
-                  decreaseMonth,
-                  increaseMonth,
-                  prevMonthButtonDisabled,
-                  nextMonthButtonDisabled,
-                }) => (
-                  <div
-                    style={{
-                      margin: 10,
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <button
-                      onClick={decreaseMonth}
-                      disabled={prevMonthButtonDisabled}
-                    >
-                      {"<"}
-                    </button>
 
-                    <select
-                      value={months[getMonth(date)]}
-                      onChange={({ target: { value } }) =>
-                        changeMonth(months.indexOf(value))
-                      }
-                    >
-                      {months.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
+  function submitHandler(formData) {
+    if (isValid) {
+      const obj = {
+        birthDate   : formatDate(formData.birthDate),
+        city        : formData.city,
+        department  : formData.department.value,
+        firstName   : formData.firstName,
+        lastName    : formData.lastName,
+        startDate   : formatDate(formData.startDate),
+        state       : formData.state.abbreviation,
+        street      : formData.street,
+        zipCode     : formData.zipCode,
+      };
 
-                    <select
-                      value={getYear(date)}
-                      onChange={({ target: { value } }) => changeYear(value)}
-                    >
-                      {years.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
+      const employees = JSON.parse(localStorage.getItem("employeesList")) || [];
+      employees.push(obj);
+      localStorage.setItem("employeesList", JSON.stringify(employees));
 
-                    <button
-                      onClick={increaseMonth}
-                      disabled={nextMonthButtonDisabled}
-                    >
-                      {">"}
-                    </button>
-                  </div>
-                );
+      reset({
+        birthDate   : "",
+        city        : "",
+        department: {
+          value   : departments[0].value,
+          label   : departments[0].label,
+        },
+        firstName   : "",
+        lastName    : "",
+        startDate   : "",
+        state: {
+          value           : states[0].value,
+          label           : states[0].label,
+          abbreviation    : states[0].abbreviation,
+        },
+        street    : "",
+        zipCode   : "",
+      });
+      setIsModal(true);
+    }
+  }
+
+  const style = {
+    backgroundColor   : "#f1f2f3",
+    maxWidth          : "500px",
+    minHeight         : "250px",
+  };
+
+  const bodyStyle = {
+    fontSize: "1.2rem",
+  };
+
+  const customHeader = ({
+    date,
+    changeYear,
+    changeMonth,
+    decreaseMonth,
+    increaseMonth,
+    prevMonthButtonDisabled,
+    nextMonthButtonDisabled,
+  }) => (
+    <div
+      style={{
+        margin            : 10,
+        display           : "flex",
+        justifyContent    : "space-between",
+      }}
+    >
+      <i
+        onClick={decreaseMonth}
+        disabled={prevMonthButtonDisabled}
+        className="fa-solid fa-chevron-left navigateButtons"
+      ></i>
+      <select
+        value={months[getMonth(date)]}
+        onChange={({ target: { value } }) => changeMonth(months.indexOf(value))}
+      >
+        {months.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+      <select
+        value={getYear(date)}
+        onChange={({ target: { value } }) => changeYear(value)}
+      >
+        {years.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+      <i
+        onClick={increaseMonth}
+        disabled={nextMonthButtonDisabled}
+        className="fa-solid fa-chevron-right navigateButtons"
+      ></i>
+    </div>
+  );
 
   return (
     <main className="home">
-      <Modal isModal={isModal} />
+      <Modal
+        isOpen={isModal}
+        message="Employee successfully created with component"
+        icon="success"
+        onClose={() => {
+          setIsModal(false);
+        }}
+        modalStyle={style}
+        modalMode={true}
+        messageStyle={bodyStyle}
+      />
       <div className="formContainer">
         <h1>Create an Employee</h1>
-        <form className="formParts" onSubmit={handleSubmit}>
+        <form
+          className="formParts"
+          id="employeeForm"
+          onSubmit={handleSubmit(submitHandler)}
+        >
           <div className="formPartsContainer">
             <div className="formInformation">
               <h2>Informations</h2>
               <div className="formRow">
                 <label htmlFor="firstName">First name</label>
-                <input type="text" id="firstName" className="formInput" />
-                <p className="errorMessage"></p>
+                <input
+                  {...register("firstName", {
+                    required: "First name is required",
+                    pattern: {
+                      value:
+                        /^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/i,
+                      message: "First name only allows letters and spaces",
+                    },
+                    minLength: {
+                      value: 3,
+                      message: "First name must be at least 3 characters",
+                    },
+                  })}
+                  type="text"
+                  id="firstName"
+                  className="formInput"
+                />
+                <p className="errorMessage">
+                  {errors.firstName && errors.firstName.message}
+                </p>
               </div>
               <div className="formRow">
                 <label htmlFor="lastName">Last name</label>
-                <input type="text" id="lastName" className="formInput" />
-                <p className="errorMessage"></p>
+                <input
+                  {...register("lastName", {
+                    required: "Last name is required",
+                    minLength: {
+                      value: 3,
+                      message: "Last name must be at least 3 characters",
+                    },
+                    pattern: {
+                      value:
+                        /^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/i,
+                      message: "Last name only allows letters and spaces",
+                    },
+                  })}
+                  type="text"
+                  id="lastName"
+                  className="formInput"
+                />
+                <p className="errorMessage">
+                  {errors.lastName && errors.lastName.message}
+                </p>
               </div>
               <div className="formRow">
                 <label htmlFor="birthDate">Date of Birth</label>
-                <DatePicker
-                  renderCustomHeader={customHeader}
-                  selected={birthDate}
-                  onChange={(date) => setBirthDate(date)}
-                  id="birthDate"
-                  className="formInput"
+                <Controller
+                  control={control}
+                  name="birthDate"
+                  rules={{
+                    required: "Date of birth is required",
+                  }}
+                  render={({ field }) => (
+                    <DatePicker
+                      renderCustomHeader={customHeader}
+                      {...field}
+                      selected={field.value}
+                      onChange={field.onChange}
+                      id="birthDate"
+                      className="formInput"
+                    />
+                  )}
                 />
-                {/* <div className="birthDateContainer"> */}
-                <p className="errorMessage"></p>
-                {/* </div> */}
+                <p className="errorMessage">
+                  {errors.birthDate && errors.birthDate.message}
+                </p>
               </div>
               <div className="formRow">
                 <label htmlFor="startDate">Start date</label>
-                <DatePicker
-                  renderCustomHeader={customHeader}
-                  selected={startDate}
-                  onChange={(date) => setStartDate(date)}
-                  id="startDate"
-                  className="formInput"
+                <Controller
+                  control={control}
+                  name="startDate"
+                  rules={{
+                    required: "Start date is required",
+                  }}
+                  render={({ field }) => (
+                    <DatePicker
+                      renderCustomHeader={customHeader}
+                      selected={field.value}
+                      onChange={field.onChange}
+                      id="startDate"
+                      className="formInput"
+                    />
+                  )}
                 />
-                <p className="errorMessage"></p>
+                <p className="errorMessage">
+                  {errors.startDate && errors.startDate.message}
+                </p>
               </div>
               <div className="formRow">
-                <label htmlFor="departement">Department</label>
-                <Select
-                  options={departments}
-                  id="departement"
+                <label htmlFor="department">Department</label>
+                <Controller
+                  control={control}
+                  rules={{ required: "Department is required" }}
+                  name="department"
+                  id="department"
                   defaultValue={departments[0]}
-                  onChange={handleDepartment}
-                  value={departments.filter((obj) => obj.value === department)}
+                  render={({ field }) => (
+                    <Select {...field} options={departments} />
+                  )}
                 />
-                <p className="errorMessage"></p>
+                <p className="errorMessage">
+                  {errors.departement && errors.departement.message}
+                </p>
               </div>
             </div>
-
             <fieldset className="formAddress">
               <legend>Address</legend>
               <div className="formRow">
                 <label htmlFor="street">Street</label>
-                <input type="text" id="street" className="formInput" />
-                <p className="errorMessage"></p>
+                <input
+                  {...register("street", {
+                    required: "Street is required",
+                    minLength: {
+                      value: 3,
+                      message: "Street must be at least 3 characters",
+                    },
+                    pattern: {
+                      value:
+                        /\d*([\s,]{0,2}\w+)([\s-]{1}?\w+)/g,
+                      message: "Street allows numbers, letters and spaces",
+                    },
+                  })}
+                  type="text"
+                  id="street"
+                  className="formInput"
+                />
+                <p className="errorMessage">
+                  {errors.street && errors.street.message}
+                </p>
               </div>
               <div className="formRow">
                 <label htmlFor="city">City</label>
-                <input type="text" id="city" className="formInput" />
-                <p className="errorMessage"></p>
+                <input
+                  {...register("city", {
+                    required: "City is required",
+                    minLength: {
+                      value: 3,
+                      message: "City must be at least 3 characters",
+                    },
+                    pattern: {
+                      value:
+                        /^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/i,
+                      message: "City only allows letters and spaces",
+                    },
+                  })}
+                  type="text"
+                  id="city"
+                  className="formInput"
+                />
+                <p className="errorMessage">
+                  {errors.city && errors.city.message}
+                </p>
               </div>
               <div className="formRow">
                 <label htmlFor="state">State</label>
-                <Select
-                  options={states}
+                <Controller
+                  control={control}
+                  name="state"
                   id="state"
                   defaultValue={states[0]}
-                  onChange={handleState}
-                  value={states.filter((obj) => obj.value === state)}
+                  render={({ field }) => <Select {...field} options={states} />}
                 />
-                <p className="errorMessage"></p>
+                <p className="errorMessage">
+                  {errors.state && errors.state.message}
+                </p>
               </div>
               <div className="formRow">
                 <label htmlFor="zipCode">Zip code</label>
-                <input type="text" id="zipCode" className="formInput" />
-                <p className="errorMessage"></p>
+                <input
+                  {...register("zipCode", {
+                    required: "Zip Code is required",
+                    pattern: {
+                      value: /^[0-9]{5}(?:-[0-9]{4})?$/,
+                      message: "Zip Code must be 5 digits or 5digits-4digits",
+                    },
+                  })}
+                  type="text"
+                  id="zipCode"
+                  className="formInput"
+                />
+                <span className="errorMessage">
+                  {errors.zipCode && errors.zipCode.message}
+                </span>
               </div>
             </fieldset>
           </div>
@@ -218,4 +370,4 @@ export default function Home() {
       </div>
     </main>
   );
-};
+}

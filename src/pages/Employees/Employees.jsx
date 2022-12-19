@@ -1,34 +1,47 @@
-import { useNavigate } from "react-router-dom";
 import "./Employees.scss";
-import React, { useState, useRef, useEffect, useMemo, useCallback} from 'react';
-import { AgGridReact } from 'ag-grid-react'; // the AG Grid React Component
-// import { employees } from "../../datas/datas";
-
-import 'ag-grid-community/styles/ag-grid.css'; // Core grid CSS, always needed
-import 'ag-grid-community/styles/ag-theme-alpine.css'; // Optional theme CSS
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
+import { AgGridReact } from "ag-grid-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Employees() {
-    const navigate = useNavigate();
-  const gridRef = useRef(); // Optional - for accessing Grid's API
-  const [rowData, setRowData] = useState(); // Set rowData to Array of Objects, one Object per Row
+  const navigate = useNavigate();
+  const gridRef = useRef();
+  const [rowData, setRowData] = useState();
 
   // Each Column Definition results in one Column.
   const [columnDefs] = useState([
-    { field: "firstName", maxWidth: 120 },
-    { field: "lastName",  maxWidth: 120 },
-    { field: "startDate", width: 120 },
-    { field: "department", maxWidth: 120 },
-    { field: "birthDate", width: 110 },
-    { field: "street", minWidth: 120, maxWidth: 170 },
-    { field: "city", width: 120 },
-    { field: "state", minWidth: 120, maxWidth: 150 },
-    { field: "zipCode", maxWidth: 100 },
+    { field: "firstName", minWidth: 120, width: 130 },
+    { field: "lastName", minWidth: 120, width: 130 },
+    { field: "startDate", minWidth: 100, maxWidth: 150 },
+    { field: "department", minWidth: 120, width: 150 },
+    { field: "birthDate", minWidth: 100, maxWidth: 150 },
+    { field: "street", minWidth: 120, width: 180 },
+    { field: "city", minWidth: 120, width: 140 },
+    { field: "state", minWidth: 70, width: 80 },
+    { field: "zipCode", minWidth: 120, maxWidth: 120 },
   ]);
 
   // DefaultColDef sets props common to all Columns
-  const defaultColDef = useMemo(() => ({
-    sortable: true,
-  }),[]);
+  const defaultColDef = useMemo(
+    () => ({
+      sortable: true,
+    }),
+    []
+  );
+
+  const containerStyle = useMemo(() => ({ width: "100%", height: "50vh" }), []);
+  const gridStyle = useMemo(
+    () => ({ height: "100%", width: "100%", overflow: "hidden" }),
+    []
+  );
 
   const employees = useMemo(
     () => JSON.parse(localStorage.getItem("employeesList")),
@@ -36,25 +49,34 @@ export default function Employees() {
   );
 
   const onFilterTextBoxChanged = useCallback(() => {
-  gridRef.current.api.setQuickFilter(
-    document.getElementById('filter-text-box').value
-  );
-}, []);
+    gridRef.current.api.setQuickFilter(
+      document.getElementById("filter-text-box").value
+    );
+  }, []);
 
-  // Example of consuming Grid Event
   const cellClickedListener = useCallback((event) => {
     console.log("cellClicked", event);
   }, []);
 
-    const onPageSizeChanged = useCallback(() => {
-      var value = document.getElementById("page-size").value;
-      gridRef.current.api.paginationSetPageSize(Number(value));
-    }, []);
+  const onPageSizeChanged = useCallback(() => {
+    var value = document.getElementById("page-size").value;
+    gridRef.current.api.paginationSetPageSize(Number(value));
+  }, []);
 
-  // Example load data from sever
+  const onGridReady = useCallback((params) => {
+    params.api.sizeColumnsToFit();
+    window.addEventListener("resize", function () {
+      setTimeout(function () {
+        params.api.sizeColumnsToFit();
+      });
+    });
+
+    gridRef.current.api.sizeColumnsToFit();
+  }, []);
+
   useEffect(() => {
     setRowData(employees);
-  },[employees]);
+  }, [employees]);
 
   return (
     <main className="employees">
@@ -76,10 +98,12 @@ export default function Employees() {
             <div>
               <div className="example-header">
                 Show
-                <select onChange={onPageSizeChanged} id="page-size" defaultValue="10">
-                  <option value="10">
-                    10
-                  </option>
+                <select
+                  onChange={onPageSizeChanged}
+                  id="page-size"
+                  defaultValue="10"
+                >
+                  <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
                   <option value="100">100</option>
@@ -97,17 +121,20 @@ export default function Employees() {
               />
             </div>
           </div>
-          <div className="ag-theme-alpine">
-            <AgGridReact
-              ref={gridRef} // Ref for accessing Grid's API
-              rowData={rowData} // Row Data for Rows
-              columnDefs={columnDefs} // Column Defs for Columns
-              defaultColDef={defaultColDef} // Default Column Properties
-              animateRows={true} // Optional - set to 'true' to have rows animate when sorted
-              onCellClicked={cellClickedListener} // Optional - registering for Grid Event
-              pagination={true} // Optional - enables pagination
-              paginationPageSize={10} // Optional - sets the page size
-            />
+          <div style={containerStyle}>
+            <div style={gridStyle} className="ag-theme-alpine">
+              <AgGridReact
+                ref={gridRef} // Ref for accessing Grid's API
+                rowData={rowData} // Row Data for Rows
+                columnDefs={columnDefs} // Column Defs for Columns
+                defaultColDef={defaultColDef} // Default Column Properties
+                animateRows={true} // Optional - set to 'true' to have rows animate when sorted
+                onCellClicked={cellClickedListener} // Optional - registering for Grid Event
+                pagination={true} // Optional - enables pagination
+                paginationPageSize={10} // Optional - sets the page size
+                onGridReady={onGridReady}
+              />
+            </div>
           </div>
         </div>
       </div>

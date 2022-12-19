@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="footer">
       <p>By</p>
-      <img src="./images/logo site.svg" alt="" className="logoFooter" />
+      <img src="./images/logo_site.svg" alt="" className="logoFooter" />
       <p>, Copyright &copy; {year}</p>
     </footer>
   );
