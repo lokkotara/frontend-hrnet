@@ -1,15 +1,14 @@
 import "./Home.scss";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import React from "react";
+import React, { useState } from "react";
 import Select from "react-select";
 import range from "lodash/range";
 import { Modal } from "@lokkotara/custom-modal";
 import { getMonth, getYear } from "date-fns";
 import { states, departments } from "../../datas/datas";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const {
@@ -48,42 +47,49 @@ export default function Home() {
   };
 
   function submitHandler(formData) {
-    if(isValid) {
-    const obj = {
-      birthDate   : formatDate(formData.birthDate),
-      city        : formData.city,
-      department  : formData.department.value,
-      firstName   : formData.firstName,
-      lastName    : formData.lastName,
-      startDate   : formatDate(formData.startDate),
-      state       : formData.state.abbreviation,
-      street      : formData.street,
-      zipCode     : formData.zipCode,
-    };
+    if (isValid) {
+      const obj = {
+        birthDate   : formatDate(formData.birthDate),
+        city        : formData.city,
+        department  : formData.department.value,
+        firstName   : formData.firstName,
+        lastName    : formData.lastName,
+        startDate   : formatDate(formData.startDate),
+        state       : formData.state.abbreviation,
+        street      : formData.street,
+        zipCode     : formData.zipCode,
+      };
 
-    const employees = JSON.parse(localStorage.getItem("employeesList")) || [];
-    employees.push(obj);
-    localStorage.setItem("employeesList", JSON.stringify(employees));
+      const employees = JSON.parse(localStorage.getItem("employeesList")) || [];
+      employees.push(obj);
+      localStorage.setItem("employeesList", JSON.stringify(employees));
 
-    reset({
-      birthDate   : "",
-      city        : "",
-      department  : { value: departments[0].value, label: departments[0].label },
-      firstName   : "",
-      lastName    : "",
-      startDate   : "",
-      state       : { value: states[0].value, label: states[0].label, abbreviation: states[0].abbreviation },
-      street      : "",
-      zipCode     : "",
-    });
-    setIsModal(true);
+      reset({
+        birthDate   : "",
+        city        : "",
+        department: {
+          value   : departments[0].value,
+          label   : departments[0].label,
+        },
+        firstName   : "",
+        lastName    : "",
+        startDate   : "",
+        state: {
+          value           : states[0].value,
+          label           : states[0].label,
+          abbreviation    : states[0].abbreviation,
+        },
+        street    : "",
+        zipCode   : "",
+      });
+      setIsModal(true);
     }
   }
 
   const style = {
-    backgroundColor: "#f1f2f3",
-    maxWidth: "500px",
-    minHeight: "250px",
+    backgroundColor   : "#f1f2f3",
+    maxWidth          : "500px",
+    minHeight         : "250px",
   };
 
   const bodyStyle = {
@@ -101,9 +107,9 @@ export default function Home() {
   }) => (
     <div
       style={{
-        margin: 10,
-        display: "flex",
-        justifyContent: "space-between",
+        margin            : 10,
+        display           : "flex",
+        justifyContent    : "space-between",
       }}
     >
       <i
@@ -149,6 +155,7 @@ export default function Home() {
           setIsModal(false);
         }}
         modalStyle={style}
+        modalMode={true}
         messageStyle={bodyStyle}
       />
       <div className="formContainer">
@@ -281,7 +288,8 @@ export default function Home() {
                       message: "Street must be at least 3 characters",
                     },
                     pattern: {
-                      value: "/d{1,}(s{1}w{1,})(s{1}?w{1,})+)/g",
+                      value:
+                        /\d*([\s,]{0,2}\w+)([\s-]{1}?\w+)/g,
                       message: "Street allows numbers, letters and spaces",
                     },
                   })}
@@ -311,7 +319,6 @@ export default function Home() {
                   type="text"
                   id="city"
                   className="formInput"
-                  pattern="^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$"
                 />
                 <p className="errorMessage">
                   {errors.city && errors.city.message}

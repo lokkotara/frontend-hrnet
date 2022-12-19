@@ -1,8 +1,14 @@
 import "./Employees.scss";
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
-import React, { useState, useRef, useEffect, useMemo, useCallback} from 'react';
-import { AgGridReact } from 'ag-grid-react';
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
+import { AgGridReact } from "ag-grid-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Employees() {
@@ -12,21 +18,30 @@ export default function Employees() {
 
   // Each Column Definition results in one Column.
   const [columnDefs] = useState([
-    { field: "firstName", maxWidth: 130 },
-    { field: "lastName",  maxWidth: 130 },
-    { field: "startDate", width: 100 },
-    { field: "department", maxWidth: 150 },
-    { field: "birthDate", width: 100 },
-    { field: "street", minWidth: 120, maxWidth: 180 },
-    { field: "city", width: 140 },
-    { field: "state", maxWidth: 100 },
-    { field: "zipCode", maxWidth: 120 },
+    { field: "firstName", minWidth: 120, width: 130 },
+    { field: "lastName", minWidth: 120, width: 130 },
+    { field: "startDate", minWidth: 100, maxWidth: 150 },
+    { field: "department", minWidth: 120, width: 150 },
+    { field: "birthDate", minWidth: 100, maxWidth: 150 },
+    { field: "street", minWidth: 120, width: 180 },
+    { field: "city", minWidth: 120, width: 140 },
+    { field: "state", minWidth: 70, width: 80 },
+    { field: "zipCode", minWidth: 120, maxWidth: 120 },
   ]);
 
   // DefaultColDef sets props common to all Columns
-  const defaultColDef = useMemo(() => ({
-    sortable: true,
-  }),[]);
+  const defaultColDef = useMemo(
+    () => ({
+      sortable: true,
+    }),
+    []
+  );
+
+  const containerStyle = useMemo(() => ({ width: "100%", height: "50vh" }), []);
+  const gridStyle = useMemo(
+    () => ({ height: "100%", width: "100%", overflow: "hidden" }),
+    []
+  );
 
   const employees = useMemo(
     () => JSON.parse(localStorage.getItem("employeesList")),
@@ -34,10 +49,10 @@ export default function Employees() {
   );
 
   const onFilterTextBoxChanged = useCallback(() => {
-  gridRef.current.api.setQuickFilter(
-    document.getElementById('filter-text-box').value
-  );
-}, []);
+    gridRef.current.api.setQuickFilter(
+      document.getElementById("filter-text-box").value
+    );
+  }, []);
 
   const cellClickedListener = useCallback((event) => {
     console.log("cellClicked", event);
@@ -48,9 +63,20 @@ export default function Employees() {
     gridRef.current.api.paginationSetPageSize(Number(value));
   }, []);
 
+  const onGridReady = useCallback((params) => {
+    params.api.sizeColumnsToFit();
+    window.addEventListener("resize", function () {
+      setTimeout(function () {
+        params.api.sizeColumnsToFit();
+      });
+    });
+
+    gridRef.current.api.sizeColumnsToFit();
+  }, []);
+
   useEffect(() => {
     setRowData(employees);
-  },[employees]);
+  }, [employees]);
 
   return (
     <main className="employees">
@@ -72,10 +98,12 @@ export default function Employees() {
             <div>
               <div className="example-header">
                 Show
-                <select onChange={onPageSizeChanged} id="page-size" defaultValue="10">
-                  <option value="10">
-                    10
-                  </option>
+                <select
+                  onChange={onPageSizeChanged}
+                  id="page-size"
+                  defaultValue="10"
+                >
+                  <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
                   <option value="100">100</option>
@@ -93,17 +121,20 @@ export default function Employees() {
               />
             </div>
           </div>
-          <div className="ag-theme-alpine">
-            <AgGridReact
-              ref={gridRef} // Ref for accessing Grid's API
-              rowData={rowData} // Row Data for Rows
-              columnDefs={columnDefs} // Column Defs for Columns
-              defaultColDef={defaultColDef} // Default Column Properties
-              animateRows={true} // Optional - set to 'true' to have rows animate when sorted
-              onCellClicked={cellClickedListener} // Optional - registering for Grid Event
-              pagination={true} // Optional - enables pagination
-              paginationPageSize={10} // Optional - sets the page size
-            />
+          <div style={containerStyle}>
+            <div style={gridStyle} className="ag-theme-alpine">
+              <AgGridReact
+                ref={gridRef} // Ref for accessing Grid's API
+                rowData={rowData} // Row Data for Rows
+                columnDefs={columnDefs} // Column Defs for Columns
+                defaultColDef={defaultColDef} // Default Column Properties
+                animateRows={true} // Optional - set to 'true' to have rows animate when sorted
+                onCellClicked={cellClickedListener} // Optional - registering for Grid Event
+                pagination={true} // Optional - enables pagination
+                paginationPageSize={10} // Optional - sets the page size
+                onGridReady={onGridReady}
+              />
+            </div>
           </div>
         </div>
       </div>
