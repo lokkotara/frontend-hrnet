@@ -86,16 +86,6 @@ export default function Home() {
     }
   }
 
-  const style = {
-    backgroundColor   : "#f1f2f3",
-    maxWidth          : "500px",
-    minHeight         : "250px",
-  };
-
-  const bodyStyle = {
-    fontSize: "1.2rem",
-  };
-
   const customHeader = ({
     date,
     changeYear,
@@ -154,9 +144,13 @@ export default function Home() {
         onClose={() => {
           setIsModal(false);
         }}
-        modalStyle={style}
+        modalStyle={{
+          backgroundColor: "#f1f2f3",
+          maxWidth: "500px",
+          minHeight: "250px",
+        }}
         modalMode={true}
-        messageStyle={bodyStyle}
+        messageStyle={{ fontSize: "1.2rem" }}
       />
       <div className="formContainer">
         <h1>Create an Employee</h1>
@@ -264,11 +258,15 @@ export default function Home() {
                 <Controller
                   control={control}
                   rules={{ required: "Department is required" }}
-                  name="department"
                   id="department"
                   defaultValue={departments[0]}
+                  name="department"
                   render={({ field }) => (
-                    <Select {...field} options={departments} />
+                    <Select
+                      {...field}
+                      options={departments}
+                      aria-label="department"
+                    />
                   )}
                 />
                 <p className="errorMessage">
@@ -288,8 +286,7 @@ export default function Home() {
                       message: "Street must be at least 3 characters",
                     },
                     pattern: {
-                      value:
-                        /\d*([\s,]{0,2}\w+)([\s-]{1}?\w+)/g,
+                      value: /\d*([\s,]{0,2}\w+)([\s-]{1}?\w+)/g,
                       message: "Street allows numbers, letters and spaces",
                     },
                   })}
@@ -331,7 +328,9 @@ export default function Home() {
                   name="state"
                   id="state"
                   defaultValue={states[0]}
-                  render={({ field }) => <Select {...field} options={states} />}
+                  render={({ field }) => (
+                    <Select {...field} options={states} aria-label="state" />
+                  )}
                 />
                 <p className="errorMessage">
                   {errors.state && errors.state.message}

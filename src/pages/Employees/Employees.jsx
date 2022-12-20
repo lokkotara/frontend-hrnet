@@ -59,16 +59,16 @@ export default function Employees() {
     gridRef.current.api.paginationSetPageSize(Number(value));
   }, []);
 
-  // const onGridReady = useCallback((params) => {
-  //   params.api.sizeColumnsToFit();
-  //   window.addEventListener("resize", function () {
-  //     setTimeout(function () {
-  //       params.api.sizeColumnsToFit();
-  //     });
-  //   });
+  const onGridReady = useCallback((params) => {
+    params.api.sizeColumnsToFit();
+    window.addEventListener("resize", function () {
+      setTimeout(function () {
+        params.api.sizeColumnsToFit();
+      });
+    });
 
-  //   gridRef.current.api.sizeColumnsToFit();
-  // }, []);
+    gridRef.current.api.sizeColumnsToFit();
+  }, []);
 
   useEffect(() => {
     setRowData(employees);
@@ -128,7 +128,7 @@ export default function Employees() {
                 // onCellClicked={cellClickedListener} // Optional - registering for Grid Event
                 pagination={true} // Optional - enables pagination
                 paginationPageSize={10} // Optional - sets the page size
-                // onGridReady={onGridReady}
+                onGridReady={onGridReady}
               />
             </div>
           </div>
