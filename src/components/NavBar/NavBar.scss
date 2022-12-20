@@ -9,9 +9,31 @@
   box-shadow: 1px 1px 0.5rem 0.005rem rgba(0, 0, 0, 0.72);
   .logo {
     width: 15rem;
+    .cls-1 {
+        fill: #6e8510;
+      }
+    
+      .cls-2 {
+        fill: #5a6f07;
+      }
+    
+      .cls-3 {
+        fill: #93ad18;
+      }
+    
+      .cls-4 {
+        fill: #403234;
+      }
   }
 
   .logoApp {
     width: 7rem;
+    .cls-1 {
+      fill: #5a6f07;
+    }
+    
+    .cls-2 {
+      fill: #403234;
+    }
   }
 }

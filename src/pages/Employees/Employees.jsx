@@ -54,25 +54,21 @@ export default function Employees() {
     );
   }, []);
 
-  const cellClickedListener = useCallback((event) => {
-    console.log("cellClicked", event);
-  }, []);
-
   const onPageSizeChanged = useCallback(() => {
     var value = document.getElementById("page-size").value;
     gridRef.current.api.paginationSetPageSize(Number(value));
   }, []);
 
-  const onGridReady = useCallback((params) => {
-    params.api.sizeColumnsToFit();
-    window.addEventListener("resize", function () {
-      setTimeout(function () {
-        params.api.sizeColumnsToFit();
-      });
-    });
+  // const onGridReady = useCallback((params) => {
+  //   params.api.sizeColumnsToFit();
+  //   window.addEventListener("resize", function () {
+  //     setTimeout(function () {
+  //       params.api.sizeColumnsToFit();
+  //     });
+  //   });
 
-    gridRef.current.api.sizeColumnsToFit();
-  }, []);
+  //   gridRef.current.api.sizeColumnsToFit();
+  // }, []);
 
   useEffect(() => {
     setRowData(employees);
@@ -129,10 +125,10 @@ export default function Employees() {
                 columnDefs={columnDefs} // Column Defs for Columns
                 defaultColDef={defaultColDef} // Default Column Properties
                 animateRows={true} // Optional - set to 'true' to have rows animate when sorted
-                onCellClicked={cellClickedListener} // Optional - registering for Grid Event
+                // onCellClicked={cellClickedListener} // Optional - registering for Grid Event
                 pagination={true} // Optional - enables pagination
                 paginationPageSize={10} // Optional - sets the page size
-                onGridReady={onGridReady}
+                // onGridReady={onGridReady}
               />
             </div>
           </div>
