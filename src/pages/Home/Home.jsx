@@ -4,11 +4,13 @@ import DatePicker from "react-datepicker";
 import React, { useState } from "react";
 import Select from "react-select";
 import range from "lodash/range";
+import { useSelector, useDispatch } from "react-redux";
 import { Modal } from "@lokkotara/custom-modal";
 import { getMonth, getYear } from "date-fns";
 import { states, departments } from "../../datas/datas";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { getEmployeeFormCompleted } from "../../features/EmployeeForm/EmployeeFormSlice";
 
 export default function Home() {
   const {
@@ -20,6 +22,7 @@ export default function Home() {
   } = useForm({
     mode: "onTouched",
   });
+  const dispatch = useDispatch();
 
   const [isModal, setIsModal] = useState(false);
   const navigate = useNavigate();
@@ -59,7 +62,7 @@ export default function Home() {
         street      : formData.street,
         zipCode     : formData.zipCode,
       };
-
+      dispatch(getEmployeeFormCompleted(obj));
       const employees = JSON.parse(localStorage.getItem("employeesList")) || [];
       employees.push(obj);
       localStorage.setItem("employeesList", JSON.stringify(employees));
