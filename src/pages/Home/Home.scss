@@ -73,11 +73,15 @@
   }
 }
 .navigateButtons {
-    font-size: 1.5rem;
+    height: 1.25rem;
+    fill: rgb(86, 82, 82);
     border: none;
     display: flex;
     justify-content: center;
     align-items: center;
+    &:hover {
+      text-shadow: 1px 2px 0.5rem 0.005rem rgba(0, 0, 0, 0.72);
+    }
 }
 
 .errorMessage {

@@ -102,11 +102,17 @@ export default function Home() {
         justifyContent    : "space-between",
       }}
     >
-      <i
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 256.05 448.15"
         onClick={decreaseMonth}
         disabled={prevMonthButtonDisabled}
-        className="fa-solid fa-chevron-left navigateButtons"
-      ></i>
+        className="navigateButtons"
+      >
+        <g id="chevron-left" data-name="chevron-left">
+          <path d="M9.38,201.47a32,32,0,0,0,0,45.3l192,192a32,32,0,0,0,45.3-45.3L77.28,224.08,246.58,54.67a32,32,0,0,0-45.3-45.29l-192,192Z" />
+        </g>
+      </svg>
       <select
         value={months[getMonth(date)]}
         onChange={({ target: { value } }) => changeMonth(months.indexOf(value))}
@@ -127,11 +133,18 @@ export default function Home() {
           </option>
         ))}
       </select>
-      <i
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 256.05 448.15"
         onClick={increaseMonth}
         disabled={nextMonthButtonDisabled}
-        className="fa-solid fa-chevron-right navigateButtons"
-      ></i>
+        className="navigateButtons"
+      >
+        <g id="chevron-right" data-name="chevron-right">
+          <path d="M246.68,201.47a32,32,0,0,1,0,45.3l-192,192a32,32,0,0,1-45.3-45.3l169.4-169.39L9.47,54.67A32,32,0,0,1,54.77,9.38l192,192Z" />
+        </g>
+      </svg>
     </div>
   );
 
